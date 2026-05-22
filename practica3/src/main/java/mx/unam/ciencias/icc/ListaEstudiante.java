@@ -1,5 +1,7 @@
 package mx.unam.ciencias.icc;
 
+import java.util.List;
+
 /**
  * <p>Clase para listas de estudiantes doblemente ligadas.</p>
  *
@@ -148,19 +150,30 @@ public class ListaEstudiante {
         } else if (i >= longitud) {
             agregaFinal(elemento);
         } else {
-            Nodo nuevo = new Nodo(elemento);
             Nodo actual = cabeza;
+            inserta(i, actual, elemento);
+        }
+    }
 
-            for (int j = 0; j < i - 1; j++) 
-                actual = actual.siguiente;
-
+    /**
+     * Metodo auxiliar al metodo inserta.
+     * @param i indice que ocupara el elemento a insertar.
+     * @param actual nodo auxiliar para recorrer la lista.
+     * @param elemento elemento a insertar.
+     */
+    private void inserta(int i, Nodo actual, Estudiante elemento) {
+        if (i == 1) {
+            Nodo nuevo = new Nodo(elemento);
             nuevo.anterior = actual;
             nuevo.siguiente = actual.siguiente;
             actual.siguiente.anterior = nuevo;
             actual.siguiente = nuevo;
             longitud++;
+            return;
         }
+        inserta(i - 1, actual.siguiente, elemento); 
     }
+
 
     /**
      * Elimina un elemento de la lista. Si el elemento no está contenido en la
@@ -245,14 +258,21 @@ public class ListaEstudiante {
             return false;
 
         Nodo actual = cabeza;
+        
+        return contiene(actual, elemento);
+    }
 
-        while (actual != null) {
-            if (actual.elemento.equals(elemento)) 
-                return true;
-            actual = actual.siguiente;
-        }
-
-        return false;
+    /**
+     * Metodo auxiliar al metodo contiene.
+     * @param actual el nodo auxiliar usado para recorrer la lista.
+     * @param elemento el elemento que queremos saber si está en la lista.
+     * @return <code>true</code> si <code>elemento</code> está en la lista,
+     *         <code>false</code> en otro caso.
+     */
+    private boolean contiene(Nodo actual, Estudiante elemento) {
+        if (actual.elemento.equals(elemento))
+            return true;
+        return contiene(actual.siguiente, elemento);
     }
 
     /**
@@ -261,14 +281,20 @@ public class ListaEstudiante {
      */
     public ListaEstudiante reversa() {
         ListaEstudiante reversa = new ListaEstudiante();
-        Nodo actual = cabeza;
+    
+        return reversa(reversa, cabeza);
+    }
 
-        while (actual != null) {
-            reversa.agregaInicio(actual.elemento);
-            actual = actual.siguiente;
-        }
+    /**
+     * Metodo auxiliar al metodo reversa.
+     * @return una nueva lista que es la reversa la que manda llamar el método.
+     */
+    private ListaEstudiante reversa(ListaEstudiante reversa, Nodo actual) {
+        if (actual == null)
+            return reversa;
 
-        return reversa;
+        reversa.agregaInicio(actual.elemento);
+        return reversa(reversa, actual.siguiente);
     }
 
     /**
